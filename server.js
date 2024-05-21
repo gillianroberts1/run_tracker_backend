@@ -14,7 +14,7 @@ const uri = 'mongodb://localhost:27017'; // Your MongoDB connection string
 const dbName = 'run_tracker'; // Replace with your database name
 
 
-MongoClient.connect('mongodb://127.0.0.1:27017', {useUnifiedTopology: true})
+MongoClient.connect('mongodb://127.0.0.1:27017')
 .then((client) => {
 const db = client.db('run_tracker');
 const runCollection = db.collection('runs')
