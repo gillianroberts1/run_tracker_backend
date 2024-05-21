@@ -1,29 +1,31 @@
+require('dotenv').config()
 
-
-const express = require('express');
-const app = express();
-const createRouter = require('./helpers/create_router.jsx')
+const express = require('express')
+const app = express()
+const createRouter = require('./helpers/create_router')
 const cors = require('cors')
 const MongoClient = require('mongodb').MongoClient
 
-app.use(express.json());
+app.use(express.json())
 app.use(cors())
-const port = 9000;
 
-const uri = 'mongodb://localhost:27017'; // Your MongoDB connection string
-const dbName = 'run_tracker'; // Replace with your database name
+const port = process.env.PORT || 9000
 
+// Access the MongoDB connection string from environment variables
+const uri = process.env.MONGODB_URL // Use the actual environment variable
+const dbName = 'Track_my_run' // Replace with your database name
 
-MongoClient.connect('mongodb://127.0.0.1:27017')
-.then((client) => {
-const db = client.db('run_tracker');
-const runCollection = db.collection('runs')
-const runsRouter = createRouter(runCollection);
-app.use('/api/runs', runsRouter);
+// Connect to MongoDB using the connection string from environment variables
+MongoClient.connect(uri, { useUnifiedTopology: true })
+  .then((client) => {
+    const db = client.db(dbName)
+    const runCollection = db.collection('Runs')
+    const runsRouter = createRouter(runCollection)
+    app.use('/api/runs', runsRouter)
 
-})
-.catch(console.error)
-
-app.listen(9000, function (){
-    console.log("Listening on port 9000");
-})
+    // Start the server after successful database connection
+    app.listen(port, () => {
+      console.log(`Listening on port ${port}`)
+    })
+  })
+  .catch(console.error)
